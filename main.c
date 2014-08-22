@@ -52,7 +52,7 @@ int main()
     LEDInit();
     ds18b20Init();
     LCDInit();
-    system("wget \"api.openweathermap.org/data/2.5/weather?q=reston&mode=xml\""); //Edit to your city
+    system("wget \"api.openweathermap.org/data/2.5/weather?q=reston&mode=xml\""); 
     double outsideTemp = getOutsideTemp();
     double humidity = getOutsideHumidity();
     double pressure = getOutsidePressure();

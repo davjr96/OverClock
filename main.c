@@ -1,7 +1,7 @@
-//Overclock main source file
-//Written 8/22/2014
+//OverClock (Overkill Clock) main source file
+//Written 8/21/2014
 //Compile using -lwiringPi and -lwiringPiDev flags
-//Edit openweathermap.org adress on line 56
+//Edit openweathermap.org address on line 56
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

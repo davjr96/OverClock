@@ -1,7 +1,6 @@
 //OverClock (Overkill Clock) main source file
 //Written 8/21/2014
-//Compile using -lwiringPi and -lwiringPiDev flags
-//Edit openweathermap.org address on line 56
+//Compiled using -lwiringPi and -lwiringPiDev flags
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -53,7 +52,7 @@ int main()
     LEDInit();
     ds18b20Init();
     LCDInit();
-    system("wget \"api.openweathermap.org/data/2.5/weather?q=london&mode=xml\""); //Edit to your city
+    system("wget \"api.openweathermap.org/data/2.5/weather?q=reston&mode=xml\""); //Edit to your city
     double outsideTemp = getOutsideTemp();
     double humidity = getOutsideHumidity();
     double pressure = getOutsidePressure();

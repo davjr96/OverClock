@@ -1,6 +1,3 @@
-//OverClock (Overkill Clock) main source file
-//Written 8/21/2014
-//Compiled using -lwiringPi and -lwiringPiDev flags
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -15,7 +12,7 @@
 #include <lcd.h>
 #include <dirent.h>
 #include <fcntl.h>
- 
+
 char* substring(char*, int, int);
 double getOutsideTemp();
 double getOutsideHumidity();
@@ -27,7 +24,7 @@ void setBrightness(int value);
 void setDecimals(int decimals);
 void ds18b20Init();
 double ds18b20Read();
- 
+
 int fd,fd1,fd2;
 DIR *dir;
 struct dirent *dirent;
@@ -37,17 +34,17 @@ char buf[256];     // Data from device
 char tmpData[6];   // Temp C * 1000 reported by device
 char path[] = "/sys/bus/w1/devices";
 ssize_t numRead;
- 
+
 int main()
 {
     struct tm * timeinfo;
     char buffer [80],hour[80], minute[80];
     char LCDBuffer[80];
     time_t rawtime;
- 
+
     if (wiringPiSetupGpio() == -1)
         return 1;
- 
+
     LEDInit();
     ds18b20Init();
     LCDInit();
@@ -58,23 +55,24 @@ int main()
     system("sudo  rm \"weather?q=reston&mode=xml\"");
     pinMode(24, OUTPUT); //Fan
     digitalWrite(24, LOW);
- 
+
     for(;;)
     {
         time (&rawtime);
         timeinfo = localtime(&rawtime);
         strftime(buffer,80,"%I%M",timeinfo);
- 
+
         strftime(hour,80,"%H",timeinfo);
         int h = atoi(hour);
-        if ((h >=21 || h < 7))//|| (ds18b20Read()>85) )
+        if ((h >=21 || h < 7)|| (ds18b20Read()>85) )
         {
             digitalWrite(24, HIGH);
         }
-        else
+        else if(ds18b20Read() <80)
         {
             digitalWrite(24, LOW);
         }
+
         if (h >=21 || h < 7)
         {
             digitalWrite(25, LOW);
@@ -85,7 +83,7 @@ int main()
             digitalWrite(25, HIGH);
             setBrightness(0);
         }
- 
+
         strftime(minute,80,"%M",timeinfo);
         int m = atoi(minute);
         if (m==0 || m == 30)
@@ -96,27 +94,28 @@ int main()
             pressure = getOutsidePressure();
             system("sudo  rm \"weather?q=reston&mode=xml\"");
         }
- 
+
         fflush (stdout) ;
         serialPuts (fd, buffer) ;
         fflush (stdout);
- 
+
+        //lcdClear(fd1);
         lcdHome(fd1);
         sprintf(LCDBuffer, "Outside Temp: %.1lf F",outsideTemp);
         lcdPuts(fd1,LCDBuffer);
- 
+
         lcdPosition (fd1, 0, 1);
         sprintf(LCDBuffer,"Inside Temp: %.1lf F",ds18b20Read());
         lcdPuts(fd1,LCDBuffer);
- 
+
         lcdPosition (fd1, 0, 2);
         sprintf(LCDBuffer,"Humidity: %.1lf %%",humidity);
         lcdPuts(fd1,LCDBuffer);
- 
+
         lcdPosition (fd1, 0, 3);
         sprintf(LCDBuffer,"Pressure: %.1lf hPa",pressure);
         lcdPuts(fd1,LCDBuffer);
- 
+
         delay(10000);
     }
     return 0;
@@ -150,17 +149,17 @@ double ds18b20Read()
     close(fd2);
     return ((tempC / 1000) * 9 / 5 + 32);
 }
- 
+
 void ds18b20Init()
 {
     system("sudo modprobe w1-gpio");
     system("sudo modprobe w1-therm");
- 
+
     dir = opendir (path);
     if (dir != NULL)
     {
         while ((dirent = readdir (dir)))
- 
+
             if (dirent->d_type == DT_LNK && strstr(dirent->d_name, "28-") != NULL)
             {
                 strcpy(dev, dirent->d_name);
@@ -179,24 +178,24 @@ char* substring(char *string, int position, int length)
     char *pointer;
     int c;
     pointer = malloc(length + 1);
- 
+
     if (pointer == NULL)
     {
         printf("Unable to allocate memory.\n");
         exit(EXIT_FAILURE);
     }
- 
+
     for (c = 0; c < position - 1; c++)
         string++;
- 
+
    for (c = 0; c < length; c++)
    {
         *(pointer + c) = *string;
-        string++;        
+        string++;
     }
- 
+
     *(pointer + c) = '\0';
- 
+
     return pointer;
 }
 double getOutsideTemp()
@@ -205,17 +204,17 @@ double getOutsideTemp()
     char buff[255];
     char  *pointer;
     fp = fopen("weather?q=reston&mode=xml", "r");
- 
+
     for (int x =0; x<8; x++)
     {
         fgets(buff, 255, (FILE*)fp);
     }
-    pointer = substring(buff, 23, 5);   
+    pointer = substring(buff, 23, 5);
     double num = atof(pointer);
-     
+
     num = num - 273;
     num = (num *1.8) + 32;
- 
+
     free(pointer);
     fclose(fp);
     return num;
@@ -226,19 +225,19 @@ double getOutsideHumidity()
     char buff[255];
     char  *pointer;
     fp = fopen("weather?q=reston&mode=xml", "r");
- 
+
     for (int x =0; x<9; x++)
     {
         fgets(buff, 255, (FILE*)fp);
     }
     pointer = substring(buff, 20, 3);
- 
+
     double num = atof(pointer);
- 
+
     free(pointer);
     fclose(fp);
     return num;
- 
+
 }
 double getOutsidePressure()
 {
@@ -246,19 +245,19 @@ double getOutsidePressure()
     char buff[255];
     char  *pointer;
     fp = fopen("weather?q=reston&mode=xml", "r");
- 
+
     for (int x =0; x<10; x++)
     {
         fgets(buff, 255, (FILE*)fp);
     }
     pointer = substring(buff, 19, 5);
-    if (pointer[0] = "\"")
-    {
-    pointer = substring(buff,20,4);
-    }
- 
+	if (pointer[0] = "\"")
+	{
+	pointer = substring(buff,20,4);
+	}
+
     double num = atof(pointer);
- 
+
     free(pointer);
     fclose(fp);
     return num;
@@ -271,18 +270,18 @@ void LEDInit()
     setBrightness(0); //full Brightness
     setDecimals(0b00010000); //Only Colon
 }
- 
+
 void clearDisplay()
 {
     serialPutchar(fd,0x76);
 }
- 
+
 void setBrightness(int value)
 {
     serialPutchar(fd,0x7A);
     serialPutchar(fd,value);
 }
- 
+
 void setDecimals(int decimals)
 {
     serialPutchar(fd,0x77);

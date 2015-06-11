@@ -48,11 +48,13 @@ int main()
     LEDInit();
     ds18b20Init();
     LCDInit();
+
     system("curl -O \"api.openweathermap.org/data/2.5/weather?q=reston&mode=xml\"");
     double outsideTemp = getOutsideTemp();
     double humidity = getOutsideHumidity();
     double pressure = getOutsidePressure();
     system("sudo  rm \"weather?q=reston&mode=xml\"");
+
     pinMode(24, OUTPUT); //Fan
     digitalWrite(24, LOW);
 
@@ -64,38 +66,41 @@ int main()
 
         strftime(hour,80,"%H",timeinfo);
         int h = atoi(hour);
-        if ((h >=21 || h < 7)|| (ds18b20Read()>85) )
-        {
-            digitalWrite(24, HIGH);
-        }
-        else if(ds18b20Read() <80)
-        {
-            digitalWrite(24, LOW);
-        }
-
-        if (h >=21 || h < 7)
-        {
-            digitalWrite(25, LOW);
-            setBrightness(255);
-        }
-        else
-        {
-            digitalWrite(25, HIGH);
-            setBrightness(0);
-        }
 
         strftime(minute,80,"%M",timeinfo);
         int m = atoi(minute);
-        if (m==0 || m == 30)
+
+		if ((h >= 21 || h < 8) || (ds18b20Read()>90))
+		{
+			digitalWrite(24, HIGH);
+		}
+		else if (ds18b20Read() <80)
+		{
+			digitalWrite(24, LOW);
+		}
+
+		if (h >= 21 || h < 9)
+		{
+			digitalWrite(25, LOW);
+			setBrightness(0);
+		}
+		else
+		{
+			digitalWrite(25, HIGH);
+			setBrightness(255);
+		}
+
+        if (m==0)
         {
-            system("curl -O \"api.openweathermap.org/data/2.5/weather?q=reston&mode=xml\"");
+
+			      system("curl -O \"api.openweathermap.org/data/2.5/weather?q=reston&mode=xml\"");
             outsideTemp = getOutsideTemp();
             humidity = getOutsideHumidity();
             pressure = getOutsidePressure();
             system("sudo  rm \"weather?q=reston&mode=xml\"");
         }
 
-        fflush (stdout) ;
+       // fflush (stdout) ;
         serialPuts (fd, buffer) ;
         fflush (stdout);
 
@@ -116,7 +121,7 @@ int main()
         sprintf(LCDBuffer,"Pressure: %.1lf hPa",pressure);
         lcdPuts(fd1,LCDBuffer);
 
-        delay(10000);
+        delay(60000);
     }
     return 0;
 }
@@ -149,7 +154,6 @@ double ds18b20Read()
     close(fd2);
     return ((tempC / 1000) * 9 / 5 + 32);
 }
-
 void ds18b20Init()
 {
     system("sudo modprobe w1-gpio");
@@ -203,7 +207,10 @@ double getOutsideTemp()
     FILE *fp;
     char buff[255];
     char  *pointer;
+
+
     fp = fopen("weather?q=reston&mode=xml", "r");
+
 
     for (int x =0; x<8; x++)
     {
@@ -224,7 +231,9 @@ double getOutsideHumidity()
     FILE *fp;
     char buff[255];
     char  *pointer;
+
     fp = fopen("weather?q=reston&mode=xml", "r");
+
 
     for (int x =0; x<9; x++)
     {
@@ -244,7 +253,9 @@ double getOutsidePressure()
     FILE *fp;
     char buff[255];
     char  *pointer;
+
     fp = fopen("weather?q=reston&mode=xml", "r");
+
 
     for (int x =0; x<10; x++)
     {
@@ -267,7 +278,7 @@ void LEDInit()
     if ((fd = serialOpen ("/dev/ttyAMA0", 9600)) < 0)
         fprintf (stderr, "Unable to open serial device: %s\n", strerror (errno));
     clearDisplay();
-    setBrightness(0); //full Brightness
+    setBrightness(255); //full Brightness
     setDecimals(0b00010000); //Only Colon
 }
 

@@ -70,7 +70,7 @@ int main()
         strftime(minute,80,"%M",timeinfo);
         int m = atoi(minute);
 
-		if ((h >= 21 || h < 8) || (ds18b20Read()>90))
+		if ((h >= 21 || h < 8) || (ds18b20Read()>87))
 		{
 			digitalWrite(24, HIGH);
 		}

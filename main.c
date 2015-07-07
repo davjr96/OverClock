@@ -240,15 +240,19 @@ double getOutsideHumidity()
 
     fp = fopen("weather?q=reston&mode=xml", "r");
 
-
+/*
     for (int x =0; x<9; x++)
     {
         fgets(buff, 255, (FILE*)fp);
     }
     pointer = substring(buff, 20, 3);
 
-    double num = atof(pointer);
-
+    double num = atof(pointer);*/
+fgets(buff, 255, (FILE*)fp);
+  fgets(buff, 255, (FILE*)fp);     
+   pointer = substring( buff, 20, 2);
+   num = atoi (pointer);
+   printf("Humidity is: %d % \n", num);
     free(pointer);
     fclose(fp);
     return num;
@@ -263,7 +267,7 @@ double getOutsidePressure()
     fp = fopen("weather?q=reston&mode=xml", "r");
 
 
-    for (int x =0; x<10; x++)
+   /* for (int x =0; x<10; x++)
     {
         fgets(buff, 255, (FILE*)fp);
     }
@@ -273,7 +277,13 @@ double getOutsidePressure()
 	pointer = substring(buff,20,4);
 	}
 
-    double num = atof(pointer);
+    double num = atof(pointer);*/
+    fgets(buff, 255, (FILE*)fp);
+  fgets(buff, 255, (FILE*)fp); 
+     pointer = substring( buff, 61, 4);
+   num = atoi (pointer);
+   printf("Pressure is: %d hPa \n", num);
+
 
     free(pointer);
     fclose(fp);

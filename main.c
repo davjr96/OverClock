@@ -224,6 +224,7 @@ double getOutsideTemp()
 
     free(pointer);
     fclose(fp);
+    printf(num);
     return num;
 }
 double getOutsideHumidity()
@@ -245,6 +246,7 @@ double getOutsideHumidity()
 
     free(pointer);
     fclose(fp);
+    printf(num);
     return num;
 
 }
@@ -271,6 +273,7 @@ double getOutsidePressure()
 
     free(pointer);
     fclose(fp);
+    printf(num);
     return num;
 }
 void LEDInit()

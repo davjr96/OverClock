@@ -217,8 +217,7 @@ double getOutsideTemp()
         fgets(buff, 255, (FILE*)fp);
     }
     pointer = substring(buff, 23, 5);
-    printf(pointer);
-
+    
     double num = atof(pointer);
     num = num - 273;
     num = (num *1.8) + 32;

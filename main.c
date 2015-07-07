@@ -212,7 +212,7 @@ double getOutsideTemp()
     fp = fopen("weather?q=reston&mode=xml", "r");
 
 
-    for (int x =0; x<8; x++)
+   /* for (int x =0; x<8; x++)
     {
         fgets(buff, 255, (FILE*)fp);
     }
@@ -221,7 +221,13 @@ double getOutsideTemp()
     double num = atof(pointer);
     num = num - 273;
     num = (num *1.8) + 32;
-    printf("%d",num);
+ */
+    fgets(buff, 255, (FILE*)fp);
+   pointer = substring(buff, 195, 5);   
+   int num = atoi (pointer);
+   num = num - 273;
+   num = (num *1.8) +32 ;
+   printf("Temperature is: %d F \n", num);
     free(pointer);
     fclose(fp);
     return num;

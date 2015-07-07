@@ -251,7 +251,7 @@ double getOutsideHumidity()
 fgets(buff, 255, (FILE*)fp);
   fgets(buff, 255, (FILE*)fp);     
    pointer = substring( buff, 20, 2);
-   num = atoi (pointer);
+   int num = atoi (pointer);
    printf("Humidity is: %d % \n", num);
     free(pointer);
     fclose(fp);
@@ -281,7 +281,7 @@ double getOutsidePressure()
     fgets(buff, 255, (FILE*)fp);
   fgets(buff, 255, (FILE*)fp); 
      pointer = substring( buff, 61, 4);
-   num = atoi (pointer);
+   int num = atoi (pointer);
    printf("Pressure is: %d hPa \n", num);
 
 

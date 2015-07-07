@@ -221,7 +221,7 @@ double getOutsideTemp()
     double num = atof(pointer);
     num = num - 273;
     num = (num *1.8) + 32;
-    
+    printf("%d",num);
     free(pointer);
     fclose(fp);
     return num;

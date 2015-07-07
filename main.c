@@ -217,14 +217,14 @@ double getOutsideTemp()
         fgets(buff, 255, (FILE*)fp);
     }
     pointer = substring(buff, 23, 5);
-    double num = atof(pointer);
+    printf("%d",pointer);
 
+    double num = atof(pointer);
     num = num - 273;
     num = (num *1.8) + 32;
-
-    //free(pointer);
+    
+    free(pointer);
     fclose(fp);
-    printf("%d",pointer);
     return num;
 }
 double getOutsideHumidity()

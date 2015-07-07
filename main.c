@@ -219,8 +219,8 @@ double getOutsideTemp()
     pointer = substring(buff, 23, 5);
     double num = atof(pointer);
 
-    num = num - 273;
-    num = (num *1.8) + 32;
+   // num = num - 273;
+   // num = (num *1.8) + 32;
 
     free(pointer);
     fclose(fp);
@@ -246,7 +246,6 @@ double getOutsideHumidity()
 
     free(pointer);
     fclose(fp);
-    printf("%d",num);
     return num;
 
 }
@@ -273,7 +272,6 @@ double getOutsidePressure()
 
     free(pointer);
     fclose(fp);
-    printf("%d",num);
     return num;
 }
 void LEDInit()
